@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org/DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+
+
+<mapper namespace="com.example.bodycare_backend.dao.UserDao">
+    <!--    TODO:유저 가입-->
+    <insert id="insertUser" parameterType="com.example.bodycare_backend.model.User">
+        INSERT INTO TB_USER
+        ( ID
+        , EMAIL
+        , PASSWORD
+        , NAME
+        , GENDER
+        , HEIGHT
+        , AGE
+        , WEIGHT
+        , BODY_FAT
+        , MUSCLE_MASS
+        , KCAL_START
+        , KCAL_WEEKLY
+
+        , FAT_GOAL
+        ,ROLES
+        , CREATED_TIME)
+        VALUES ( SQ_USER.NEXTVAL
+               , #{email}
+               , #{password}
+               , #{name}
+               , #{gender}
+               , #{height}
+               , #{age}
+               , #{weight}
+               , #{bodyFat}
+               , #{muscleMass}
+               , #{kcalStart}
+               , #{kcalWeekly}
+
+               , #{fatGoal}
+               ,#{roles}
+               , TO_CHAR(SYSDATE, 'YYYY-MM-DD HH24:MI:SS'))
+    </insert>
+
+    <!--    TODO: 아이디별로 조회-->
+    <select id="findById" parameterType="Long"
+            resultType="com.example.bodycare_backend.model.User">
+        SELECT *
+        FROM TB_USER
+        WHERE ID = #{id}
+    </select>
+    <select id="findByEmail" parameterType="String"
+            resultType="com.example.bodycare_backend.model.User">
+        SELECT *
+        FROM TB_USER
+        WHERE EMAIL = #{email}
+    </select>
+
+
+
+    <select id="findAll"
+            resultType="com.example.bodycare_backend.model.User">
+        SELECT *
+        FROM TB_USER
+    </select>
+
+
+
+    <update id="updateUser" parameterType="com.example.bodycare_backend.model.User">
+        UPDATE TB_USER
+        SET
+            PASSWORD = #{password},
+            NAME = #{name},
+            HEIGHT=#{height},
+            AGE = #{age},
+            GENDER = #{gender},
+            FAT_GOAL = #{fatGoal},
+            KCAL_START = #{kcalStart},
+            KCAL_WEEKLY=#{kcalWeekly},
+            WEIGHT = #{weight},
+            BODY_FAT = #{bodyFat},
+            MUSCLE_MASS=#{muscleMass},
+
+            UPDATE_TIME = TO_CHAR(SYSDATE, 'YYYY-MM-DD HH24:MI:SS')
+        WHERE EMAIL =#{email}
+
+    </update>
+
+    <delete id="deleteUser" parameterType="String">
+        DELETE FROM TB_USER WHERE EMAIL LIKE '%' || #{email} || '%'
+    </delete>
+
+    <update id="updateUserAmr" parameterType="com.example.bodycare_backend.model.User">
+        UPDATE TB_USER
+        SET
+            AMR = #{amr}
+        WHERE ID=#{id}
+    </update>
+
+<!--    <update id="updateBasic" parameterType="com.example.bodycare_backend.model.User">-->
+<!--        UPDATE TB_USER-->
+<!--        SET-->
+<!--            WEIGHT = #{weight},-->
+<!--            BODY_FAT = #{bodyFat},-->
+<!--            MUSCLE_MASS=#{muscleMass},-->
+<!--            UPDATE_TIME = TO_CHAR(SYSDATE, 'YYYY-MM-DD HH24:MI:SS')-->
+<!--        WHERE ID = #{id}-->
+<!--        </update>-->
+<!--    <update id="updateExer" parameterType="com.example.bodycare_backend.model.User">-->
+<!--        UPDATE TB_USER-->
+<!--        SET-->
+<!--            FAT_GOAL = #{fatGoal},-->
+<!--            KCAL_START = #{kcalStart},-->
+<!--            KCAL_WEEKLY=#{kcalWeekly},-->
+<!--            UPDATE_TIME = TO_CHAR(SYSDATE, 'YYYY-MM-DD HH24:MI:SS')-->
+<!--        WHERE ID = #{id}-->
+<!--        </update>-->
+</mapper>
+
+

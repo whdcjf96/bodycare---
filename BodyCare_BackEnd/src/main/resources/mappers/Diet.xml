@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org/DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+
+<mapper namespace="com.example.bodycare_backend.dao.DietDao">
+
+<!--    전체 조회 메소드-->
+    <select id="selectAll" parameterType="com.example.bodycare_backend.paging.Criteria" resultType="com.example.bodycare_backend.model.Diet">
+        SELECT *
+        FROM (
+                 SELECT ROWNUM R, DT.*
+                 FROM DIET DT
+                 WHERE
+                   ROWNUM &lt; = (#{page} + 1) * #{size}
+             )
+        WHERE R > #{page} * #{size}
+    </select>
+
+<!--    타이틀별 조회-->
+    <select id="selectByTitle" parameterType="com.example.bodycare_backend.paging.Criteria" resultType="com.example.bodycare_backend.model.Diet">
+        SELECT *
+        FROM (
+                 SELECT ROWNUM R, DT.*
+                 FROM DIET DT
+                 WHERE TITLE LIKE '%' || #{title} || '%'
+                   AND ROWNUM &lt; = (#{page} + 1) * #{size}
+             )
+        WHERE R > #{page} * #{size}
+    </select>
+
+    <select id="selectById" parameterType="Long" resultType="com.example.bodycare_backend.model.Diet">
+        SELECT * FROM DIET WHERE ID= #{id}
+    </select>
+
+<!--    음식 추가-->
+    <update id="insertDiet" parameterType="com.example.bodycare_backend.model.Diet">
+        INSERT INTO DIET(
+            ID,
+            CARBOHYDRATE,
+            PROTEIN,
+            FAT,
+            TITLE)VALUES(
+                            SQ_DIET.NEXTVAL,
+                            #{carbohydrate},
+                            #{protein},
+                            #{fat},
+                            #{title}
+                        )
+        <selectKey keyProperty="id" resultType="long" order="AFTER">
+            SELECT SQ_DIET.CURRVAL FROM DUAL
+        </selectKey>
+    </update>
+
+
+    <select id="selectTotalCount"
+            parameterType="String"
+            resultType="int">
+        SELECT COUNT(*)
+        FROM DIET
+        WHERE TITLE LIKE '%'|| #{title} ||'%'
+    </select>
+
+    <select id="findByTitleContaining"
+            parameterType="com.example.bodycare_backend.paging.Criteria"
+            resultType="com.example.bodycare_backend.model.Diet">
+        SELECT *
+        FROM (
+                 SELECT ROWNUM R, TC.*
+                 FROM DIET TC
+                 WHERE
+                     TITLE LIKE '%' || #{title} || '%'
+                   AND ROWNUM &lt; = (#{page} + 1) * #{size}
+             )
+        WHERE R > #{page} * #{size}
+    </select>
+
+
+
+</mapper>
+
+

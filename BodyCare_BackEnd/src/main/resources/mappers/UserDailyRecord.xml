@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org/DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+
+<mapper namespace="com.example.bodycare_backend.dao.UserDailyRecordDao">
+    <!--    TODO: 기본페이지에서 입력받을 때 동시 저장-->
+    <!--    TODO : ID2 -> FK-->
+    <insert id="insertRecord" parameterType="com.example.bodycare_backend.model.UserDailyRecord">
+
+        INSERT INTO USER_DAILY_RECORD(ID,
+                                      RECORD_DATE,
+                                      WEIGHT,
+                                      BODY_FAT,
+                                      MUSCLE_MASS,
+                                      CREATED_TIME,
+                                      ID2)
+        VALUES (SQ_USER_DAILY_RECORD.NEXTVAL,
+                TO_CHAR(SYSDATE, 'YYYY-MM-DD'),
+                #{weight},
+                #{bodyFat},
+                #{muscleMass},
+                TO_CHAR(SYSDATE, 'YYYY-MM-DD HH24:MI:SS'),
+                #{id2})
+    </insert>
+
+    <!--    TODO: 체중추적에서 조회-->
+    <select id="selectById" parameterType="Long"
+            resultType="com.example.bodycare_backend.model.UserDailyRecord">
+        SELECT ID2, RECORD_DATE, WEIGHT
+
+        FROM USER_DAILY_RECORD
+        WHERE ID2 = #{id2}
+        ORDER BY RECORD_DATE DESC
+    </select>
+
+    <update id="updateRecord" parameterType="com.example.bodycare_backend.model.UserDailyRecord">
+        UPDATE USER_DAILY_RECORD
+        SET RECORD_DATE=#{recordDate},
+            WEIGHT=#{weight},
+            BODY_FAT=#{bodyFat},
+            MUSCLE_MASS=#{muscleMass},
+            UPDATE_TIME=TO_CHAR(SYSDATE, 'YYYY-MM-DD HH24:MI:SS')
+        WHERE ID = #{id}
+    </update>
+
+
+    <delete id="deleteRecord" parameterType="Long">
+        DELETE
+        USER_DAILY_RECORD WHERE ID=
+        #{id}
+    </delete>
+
+</mapper>
+
+

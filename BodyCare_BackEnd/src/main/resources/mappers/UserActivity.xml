@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org/DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+
+<mapper namespace="com.example.bodycare_backend.dao.UserActivityDao">
+
+    <!--    전체 조회 메소드 Todo:fk-->
+    <select id="selectById" parameterType="Long" resultType="com.example.bodycare_backend.model.UserActivity">
+
+        SELECT ID,USER_ID, ACTIVITY, INTENSITY, ACTIVITY_TIME
+        FROM USER_ACTIVITY
+        WHERE USER_ID = #{userId}
+    </select>
+
+    <!--    TODO: 액티비티테이블에서 선택해서 유저액티비티 테이블에 삽입-->
+    <insert id="insertUserActivity" parameterType="com.example.bodycare_backend.model.UserActivity">
+
+        INSERT INTO USER_ACTIVITY(ID,ACTIVITY_TIME, ACTIVITY, INTENSITY, USER_ID, ACTIVITY_ID,ACTIVITY_DATE)
+        VALUES (
+                   SQ_USER_ACTIVITY.NEXTVAL,
+                   #{activityTime},
+                   #{activity},
+                   #{intensity},
+                   #{userId},
+                   #{activityId},
+                   TO_CHAR(SYSDATE, 'YYYY-MM-DD'))
+    </insert>
+
+    <update id="updateUserActivity" parameterType="com.example.bodycare_backend.model.UserActivity">
+        UPDATE USER_ACTIVITY
+        SET ACTIVITY_TIME=#{activityTime},
+            ACTIVITY_ID#{activityId},
+            UPDATE_TIME  = TO_CHAR(SYSDATE, 'YYYY-MM-DD HH24:MI:SS')
+        WHERE ID = #{id}
+    </update>
+
+    <delete id="deleteUserActivity" parameterType="Long">
+        DELETE
+        USER_ACTIVITY WHERE ID=
+        #{id}
+    </delete>
+    <delete id="deleteUserActivityAll">
+        DELETE
+        USER_ACTIVITY
+    </delete>
+
+
+</mapper>
+

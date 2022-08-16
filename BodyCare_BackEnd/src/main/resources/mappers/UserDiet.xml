@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org/DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+
+
+<mapper namespace="com.example.bodycare_backend.dao.UserDietDao">
+    <!--    TODO:  인풋창에서 데이터 삽입   -->
+    <insert id="insertDiet" parameterType="com.example.bodycare_backend.model.UserDiet">
+        INSERT INTO USER_DIET(ID,
+                              QUANTITY,
+                              CREATED_TIME,
+                              DIET_TIME,
+                              USER_ID,
+                              DIET_ID,
+                              DIET_DATE)
+        VALUES (SQ_USER_DIET.nextval,
+                #{quantity},
+                TO_CHAR(SYSDATE, 'YYYY-MM-DD HH24:MI:SS'),
+                #{dietTime},
+                #{userId},
+                #{dietId},
+                TO_CHAR(SYSDATE, 'YYYY-MM-DD'))
+    </insert>
+
+    <!--    TODO: 식단관리페이지에서 조회-->
+    <select id="selectByUserId" parameterType="com.example.bodycare_backend.paging.Criteria"
+            resultType="com.example.bodycare_backend.model.UserDiet">
+        SELECT A.ID,A.USER_ID, A.DIET_TIME, A.DIET_DATE, B.TITLE,A.QUANTITY,(A.QUANTITY * B.CARBOHYDRATE) AS carbohydrate, (A.QUANTITY * B.PROTEIN) AS protein, (A.QUANTITY * B.FAT) AS fat
+        FROM USER_DIET A, DIET B, TB_USER C
+        WHERE A.USER_ID = C.ID AND A.DIET_ID= B.ID AND A.USER_ID = #{userId} AND A.DIET_DATE LIKE '%' || #{dietDate} || '%'
+        ORDER BY A.DIET_TIME
+    </select>
+    <select id="selectAll"
+            resultType="com.example.bodycare_backend.model.UserDiet">
+        SELECT A.USER_ID, A.DIET_TIME, A.DIET_DATE, B.TITLE,A.QUANTITY,(A.QUANTITY * B.CARBOHYDRATE) AS carbohydrate, (A.QUANTITY * B.PROTEIN) AS protein, (A.QUANTITY * B.FAT) AS fat
+        FROM USER_DIET A, DIET B, TB_USER C
+        WHERE A.USER_ID = C.ID AND A.DIET_ID= B.ID
+        ORDER BY A.DIET_TIME
+    </select>
+
+
+    <update id="updateDiet" parameterType="com.example.bodycare_backend.model.UserDiet">
+                <selectKey keyProperty="dietDate" resultType="String" order="BEFORE">
+                    SELECT DIET_DATE FROM USER_DIET WHERE ID=#{id}
+                </selectKey>
+        UPDATE USER_DIET
+        SET DIET_ID = #{dietId},
+            QUANTITY = #{quantity},
+            DIET_TIME = #{dietTime},
+            DIET_DATE = #{dietDate},
+            UPDATE_TIME = TO_CHAR(SYSDATE, 'YYYY-MM-DD HH24:MI:SS')
+        WHERE ID=#{id}
+
+    </update>
+
+    <delete id="deleteDiet" parameterType="com.example.bodycare_backend.paging.Criteria">
+        DELETE USER_DIET WHERE USER_ID = #{userId} AND ID = #{id}
+    </delete>
+
+</mapper>
+
+
